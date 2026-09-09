@@ -8,3 +8,4 @@ export {
   scrollProgress,
 } from "./scroll";
 export { applyTheme, applyLang } from "./theme";
+export { submitNotifyEmail } from "./notify";

@@ -66,6 +66,8 @@ export interface Dictionary {
   notify: string;
   emailPlaceholder: string;
   sentMsg: string;
+  sendingMsg: string;
+  sendError: string;
   footer: string;
   nav: NavLabels;
   aboutLead: string;

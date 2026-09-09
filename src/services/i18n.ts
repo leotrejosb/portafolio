@@ -40,6 +40,8 @@ const es: Dictionary = {
   notify: "Avísame",
   emailPlaceholder: "tu@correo.com",
   sentMsg: "Listo. Te escribo cuando esté publicado.",
+  sendingMsg: "Enviando…",
+  sendError: "No se pudo enviar. Intenta de nuevo.",
   footer: "Portafolio 2026 — Vite · React · Django",
   nav: {
     about: "Sobre mí",
@@ -177,6 +179,8 @@ const en: Dictionary = {
   notify: "Notify me",
   emailPlaceholder: "you@email.com",
   sentMsg: "Done. I'll write when it ships.",
+  sendingMsg: "Sending…",
+  sendError: "Couldn't send. Please try again.",
   footer: "Portfolio 2026 — Vite · React · Django",
   nav: {
     about: "About",

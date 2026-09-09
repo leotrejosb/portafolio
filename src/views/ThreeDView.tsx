@@ -2,6 +2,7 @@ import { useState, type FormEvent, type RefObject } from "react";
 import { SectionLabel } from "@/components";
 import type { Dictionary, Lang } from "@/interfaces";
 import { panelCentered } from "@/lib/tw";
+import { submitNotifyEmail } from "@/services";
 
 interface ThreeDViewProps {
   t: Dictionary;
@@ -14,10 +15,22 @@ interface ThreeDViewProps {
 export function ThreeDView({ t, lang, loaderRef, pct, done }: ThreeDViewProps) {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(false);
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    if (sending) return;
+    setSending(true);
+    setError(false);
+    try {
+      await submitNotifyEmail(email.trim());
+      setSent(true);
+    } catch {
+      setError(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   const loaderLabel = done
@@ -62,22 +75,30 @@ export function ThreeDView({ t, lang, loaderRef, pct, done }: ThreeDViewProps) {
           <div className="flex flex-col gap-4">
             <p className="m-0 text-base leading-relaxed text-pretty text-dim">{t.threedBody}</p>
             {!sent ? (
-              <form onSubmit={onSubmit} className="flex items-center gap-3 border-b border-line pb-[9px]">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t.emailPlaceholder}
-                  className="min-w-0 flex-1 border-0 bg-transparent py-1.5 font-mono text-[0.88rem] tracking-[0.04em] text-ink outline-none"
-                />
-                <button
-                  type="submit"
-                  className="cursor-pointer border-0 bg-hot px-3.5 py-2 font-mono text-[9px] uppercase tracking-[0.2em] text-hero-ink transition-opacity duration-300 hover:opacity-70"
-                >
-                  {t.notify}
-                </button>
-              </form>
+              <>
+                <form onSubmit={onSubmit} className="flex items-center gap-3 border-b border-line pb-[9px]">
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    disabled={sending}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t.emailPlaceholder}
+                    className="min-w-0 flex-1 border-0 bg-transparent py-1.5 font-mono text-[0.88rem] tracking-[0.04em] text-ink outline-none disabled:opacity-50"
+                  />
+                  <button
+                    type="submit"
+                    disabled={sending}
+                    className="cursor-pointer border-0 bg-hot px-3.5 py-2 font-mono text-[9px] uppercase tracking-[0.2em] text-hero-ink transition-opacity duration-300 hover:opacity-70 disabled:cursor-wait disabled:opacity-60"
+                  >
+                    {sending ? t.sendingMsg : t.notify}
+                  </button>
+                </form>
+                {error ? (
+                  <p className="m-0 font-mono text-[10px] uppercase tracking-[0.14em] text-peach">{t.sendError}</p>
+                ) : null}
+              </>
             ) : (
               <p className="m-0 border-b border-hot py-2.5 font-mono text-[10px] uppercase tracking-[0.16em]">
                 {t.sentMsg}

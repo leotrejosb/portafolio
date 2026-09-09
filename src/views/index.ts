@@ -1,0 +1,9 @@
+export { HeroView } from "./HeroView";
+export { AboutView } from "./AboutView";
+export { StackView } from "./StackView";
+export { WorkView } from "./WorkView";
+export { ThreeDView } from "./ThreeDView";
+export { CertsView } from "./CertsView";
+export { ExperienceView } from "./ExperienceView";
+export { EducationView } from "./EducationView";
+export { ContactView } from "./ContactView";

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; }
+  * { box-sizing: border-box; }
+  html { --bg: #121110; --ink: #f3f1ed; --dim: #918b82; --line: rgba(243,241,237,0.15); --panel: #1b1a17; --hot: #f0dfa8; }
+  html[data-theme="light"] { --bg: #faf8f4; --ink: #14130f; --dim: #6b6660; --line: rgba(20,19,15,0.16); --panel: #efece5; --hot: #f0dfa8; }
+  body { background: var(--bg); }
+  a { color: var(--ink); text-decoration: none; }
+  a:hover { color: var(--ink); }
+  ::selection { background: #f0dfa8; color: #14130f; }
+  input::placeholder { color: var(--dim); }
+  [data-scroll]::-webkit-scrollbar { width: 0; height: 0; }
+  @keyframes leoBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
+  @keyframes leoDrift { 0% { transform: translateY(0); } 100% { transform: translateY(9px); } }
+  @keyframes leoUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes leoMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes leoRise { from { opacity: 0; transform: translateY(64px) scale(1.04); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes leoFade { from { opacity: 0; } to { opacity: 1; } }
+</style>
+<script src="scroll-nav.js"></script>
+</helmet>
+<div style="font-family: Archivo, Helvetica, sans-serif; background: var(--bg); color: var(--ink); height: 100vh; overflow: hidden; position: relative; transition: background 0.55s ease, color 0.55s ease;">
+
+  <div style="position: fixed; inset: 0; z-index: 90; pointer-events: none; background: var(--panel); transform-origin: left; transition: transform 0.62s cubic-bezier(0.76,0,0.24,1); transform: {{ wipe }};"></div>
+
+  <div style="position: fixed; z-index: 95; top: 0; left: 0; pointer-events: none; mix-blend-mode: difference; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f0dfa8; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: #14130f; transition: width 0.3s cubic-bezier(0.16,1,0.3,1), height 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease; transform: {{ cur.t }}; width: {{ cur.s }}; height: {{ cur.s }}; opacity: {{ cur.o }};">{{ cur.label }}</div>
+
+  
+
+  <div style="position: fixed; bottom: 0; left: 0; right: 0; height: 2px; background: var(--line); z-index: 70;">
+    <div id="leo-rail" style="height: 100%; background: #f0dfa8; width: 0%; transition: width 0.18s linear;"></div>
+  </div>
+  <div style="position: fixed; bottom: 12px; right: clamp(20px, 5vw, 72px); z-index: 71; display: flex; align-items: baseline; gap: 10px; white-space: nowrap; background: var(--bg); border: 1px solid var(--line); padding: 8px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim);">
+    <span id="leo-num" style="color: var(--ink);">01</span><span>/ 09</span><span id="leo-label" style="color: var(--ink);">{{ panelLabel }}</span>
+  </div>
+
+  <div data-scroll="" style="height: 100%; display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x proximity; scroll-behavior: auto; scrollbar-width: none;" ref="{{ scrollRef }}">
+
+    <section id="hero" data-screen-label="01 Hero" style="position: relative; width: 100vw; flex: none; height: 100%; min-height: 0; scroll-snap-align: start; overflow: hidden; background: #ded8cf; border-top: 3px solid #c9beee; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr); align-items: stretch; column-gap: clamp(14px, 3vw, 40px); padding: 0 clamp(20px, 5vw, 72px) clamp(96px, 17vh, 200px); padding-top: calc(var(--hdr, 130px) + clamp(14px, 3vh, 30px));">
+
+      <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 20px; min-width: 0; z-index: 3; width: 551px; height: 305px">
+        <div style="display: flex; gap: 10px; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #46403a; animation: leoFade 1.4s ease 0.4s both;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: #14130f; animation: leoBlink 2.4s ease-in-out infinite; flex: none;"></span>
+          <span>{{ t.heroStatus }}</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; background: #14130f; color: #ded8cf; border-radius: 999px; padding: 11px 13px 11px 20px; max-width: 100%; animation: leoFade 1.4s ease 0.6s both;">
+          <span style="font-size: 0.84rem; line-height: 1.25; min-width: 0;">{{ t.located }}</span>
+          <span style="display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; flex: none; border-radius: 50%; background: rgba(222,216,207,0.16); font-family: 'IBM Plex Mono', monospace; font-size: 11px;">{{ localTime }}</span>
+        </div>
+        <span style="font-size: 22px; color: #14130f; animation: leoDrift 1.8s ease-in-out infinite alternate;">↘</span><p style="margin: 0; font-size: clamp(1rem, 2.4vw, 2rem); line-height: 1.12; letter-spacing: -0.03em; color: #14130f; text-wrap: pretty;">{{ t.heroRoleLines }}</p><div style="display: flex; align-items: center; gap: 10px; margin-top: auto; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #46403a;">
+          <span>{{ t.scroll }}</span>
+          <span style="display: block; width: 26px; height: 1px; background: #14130f;"></span>
+        </div><div style="height: 1px;"></div>
+      </div><div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: clamp(14px, 3.5vh, 36px); min-width: 0; z-index: 3; animation: leoFade 1.4s ease 0.75s both; width: 439px; height: 336px">
+        
+        
+        
+      </div><span style="display: block; white-space: nowrap; font-size: clamp(4.2rem, 15vw, 15rem); font-weight: 500; line-height: 0.8; letter-spacing: -0.05em; color: #ffffff; padding-right: 0.18em;">Leonardo Trejos — Leonardo Trejos — </span>
+
+      
+
+      
+
+      <div style="position: absolute; bottom: -1.2vw; left: 0; width: 100%; overflow: hidden; mix-blend-mode: difference; pointer-events: none; z-index: 4;">
+        <div style="display: flex; width: max-content; animation: leoMarquee 38s linear infinite;">
+          
+          <span style="display: block; white-space: nowrap; font-size: clamp(4.2rem, 15vw, 15rem); font-weight: 500; line-height: 0.8; letter-spacing: -0.05em; color: #ffffff; padding-right: 0.18em; width: 2849px; height: 232px">Leonardo Trejos — Leonardo Trejos — </span>
+        </div>
+      </div>
+    <img src="leo-portrait.jpeg" alt="Leonardo Trejos" style="position: absolute; inset: 0; width: 569px; height: 651px; object-fit: cover; object-position: 50% 10%; animation: leoRise 1.5s cubic-bezier(0.16,1,0.3,1) both; left: 643px; top: 81px"><header ref="{{ headerRef }}" style="position: fixed; top: -11px; left: -9px; z-index: 60; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: clamp(16px, 2.4vw, 26px) clamp(20px, 5vw, 72px); backdrop-filter: blur(14px); background: color-mix(in oklab, var(--bg) 78%, transparent); border-bottom: 1px solid var(--line); width: 1232px; height: 113px">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-size: 0.95rem; letter-spacing: -0.01em;">Leo Trejos</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim);">{{ t.navRole }}</span>
+    </div>
+    <nav style="display: flex; align-items: center; gap: clamp(10px, 1.6vw, 22px); flex-wrap: wrap;">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+        <button type="button" onClick="{{ n.go }}" style="background: transparent; border: 0; padding: 6px 0; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid transparent; transition: color 0.35s ease, border-color 0.35s cubic-bezier(0.16,1,0.3,1), letter-spacing 0.35s ease;" style-hover="color: var(--ink); border-color: #f0dfa8; letter-spacing: 0.22em;">{{ n.label }}</button>
+      </sc-for>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div style="display: flex; border: 1px solid var(--line); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em;">
+        <button type="button" onClick="{{ setEs }}" style="background: {{ esBg }}; color: {{ esInk }}; border: 0; padding: 7px 11px; cursor: pointer; transition: background 0.3s ease, color 0.3s ease;">ES</button>
+        <button type="button" onClick="{{ setEn }}" style="background: {{ enBg }}; color: {{ enInk }}; border: 0; padding: 7px 11px; cursor: pointer; transition: background 0.3s ease, color 0.3s ease;">EN</button>
+      </div>
+      <button type="button" onClick="{{ toggleTheme }}" title="{{ t.themeLabel }}" style="background: transparent; border: 1px solid var(--line); color: var(--dim); padding: 7px 11px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.3s ease, border-color 0.3s ease;" style-hover="color: var(--ink); border-color: #f0dfa8;">{{ themeGlyph }}</button>
+    </div>
+  </header></section>
+
+    <section id="about" data-screen-label="02 Sobre mí" style="width: 100vw; flex: none; height: 100%; scroll-snap-align: start; overflow-y: auto; overflow-x: hidden; display: flex; align-items: center; padding: clamp(24px, 5vw, 72px); padding-top: calc(var(--hdr, 130px) + clamp(24px, 4vh, 48px)); border-top: 3px solid #c9beee;">
+      <div style="width: 100%;">
+        <div style="display: flex; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: clamp(28px, 6vh, 60px);">
+          <span style="color: #c9beee;">02</span><span>{{ t.nav.about }}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: clamp(28px, 5vw, 80px); align-items: start;">
+          <h2 style="margin: 0; font-weight: 400; font-size: clamp(1.55rem, 3.5vw, 3.2rem); line-height: 1.1; letter-spacing: -0.04em; text-wrap: pretty;">{{ t.aboutLead }}</h2>
+          <div style="display: flex; flex-direction: column; gap: 18px;">
+            <p style="margin: 0; font-size: clamp(0.95rem, 1.2vw, 1.05rem); line-height: 1.65; color: var(--dim); text-wrap: pretty;">{{ t.aboutP1 }}</p>
+            <p style="margin: 0; font-size: clamp(0.95rem, 1.2vw, 1.05rem); line-height: 1.65; color: var(--dim); text-wrap: pretty;">{{ t.aboutP2 }}</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 1px; background: var(--line); margin-top: 10px; border: 1px solid var(--line);">
+              <sc-for list="{{ t.facts }}" as="f" hint-placeholder-count="4">
+                <div style="background: var(--bg); padding: 16px 15px;">
+                  <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim);">{{ f.k }}</div>
+                  <div style="font-size: 1rem; margin-top: 8px; letter-spacing: -0.01em;">{{ f.v }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stack" data-screen-label="03 Stack" style="width: 100vw; flex: none; height: 100%; scroll-snap-align: start; overflow-y: auto; overflow-x: hidden; display: flex; align-items: center; padding: clamp(24px, 5vw, 72px); padding-top: calc(var(--hdr, 130px) + clamp(24px, 4vh, 48px)); border-top: 3px solid #b8e6d3;">
+      <div style="width: 100%;">
+        <div style="display: flex; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: clamp(24px, 5vh, 50px);">
+          <span style="color: #b8e6d3;">03</span><span>{{ t.nav.stack }}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; border-bottom: 1px solid var(--line);">
+          <sc-for list="{{ t.stack }}" as="g" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px clamp(16px, 4vw, 48px); align-items: baseline; border-top: 1px solid var(--line); padding: clamp(16px, 2.6vh, 26px) 0;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); display: flex; gap: 10px; align-items: center;">
+                <span style="width: 8px; height: 8px; background: #b8e6d3;"></span>{{ g.k }}
+              </div>
+              <div style="grid-column: span 2; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: clamp(1rem, 1.9vw, 1.55rem); letter-spacing: -0.028em;">
+                <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="5">
+                  <span style="padding-bottom: 2px; border-bottom: 1px solid transparent; transition: border-color 0.4s ease, color 0.3s ease;" style-hover="border-color: #f0dfa8;">{{ it }}</span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="work" data-screen-label="04 Proyectos" style="width: 100vw; flex: none; height: 100%; scroll-snap-align: start; overflow-y: auto; overflow-x: hidden; display: flex; align-items: center; padding: clamp(24px, 5vw, 72px); padding-top: calc(var(--hdr, 130px) + clamp(24px, 4vh, 48px)); border-top: 3px solid #ffd3b8;">
+      <div style="width: 100%;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 22px; flex-wrap: wrap; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: clamp(22px, 4vh, 44px);">
+          <div style="display: flex; gap: 12px;"><span style="color: #ffd3b8;">04</span><span>{{ t.nav.work }}</span></div>
+          <span>{{ t.workNote }}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; border-bottom: 1px solid var(--line);" onMouseLeave="{{ curOff }}">
+          <sc-for list="{{ t.projects }}" as="p" hint-placeholder-count="4">
+            <div onMouseEnter="{{ p.enter }}" style="display: grid; grid-template-columns: 40px minmax(0, 1.35fr) minmax(0, 1.5fr) 64px; gap: clamp(10px, 2.2vw, 30px); align-items: baseline; border-top: 1px solid var(--line); padding: clamp(14px, 2.3vh, 24px) 0; cursor: none; transition: padding-left 0.55s cubic-bezier(0.16,1,0.3,1), background 0.4s ease;" style-hover="padding-left: 16px; background: var(--panel);">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--dim);">{{ p.n }}</span>
+              <h3 style="margin: 0; font-weight: 400; font-size: clamp(1.15rem, 2.9vw, 2.3rem); line-height: 1.05; letter-spacing: -0.038em; text-wrap: pretty;">{{ p.name }}</h3>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 0.92rem; color: var(--dim); line-height: 1.5;">{{ p.kind }}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim);">{{ p.stack }}</span>
+              </div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--dim); text-align: right;">{{ p.year }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="threed" data-screen-label="05 Próximamente 3D" style="width: 100vw; flex: none; height: 100%; scroll-snap-align: start; overflow-y: auto; overflow-x: hidden; display: flex; align-items: center; padding: clamp(24px, 5vw, 72px); padding-top: calc(var(--hdr, 130px) + clamp(24px, 4vh, 48px)); background: var(--panel); background-image: repeating-linear-gradient(45deg, rgba(201,190,238,0.18) 0 1px, transparent 1px 13px); border-top: 3px solid #c9beee; transition: background 0.55s ease;">
+      <div ref="{{ loaderRef }}" style="width: 100%; max-width: 1120px; margin: 0 auto; background: var(--bg); border: 1px solid var(--line); padding: clamp(22px, 4.5vw, 60px); transition: background 0.55s ease;">
+        <div style="display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim);">
+          <div style="display: flex; gap: 12px;"><span style="color: #c9beee;">05</span><span>{{ t.nav.threed }}</span></div>
+          <span>{{ t.previewTag }}</span>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; margin-top: clamp(28px, 7vh, 72px);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 18px; flex-wrap: wrap;">
+            <span style="font-size: clamp(0.78rem, 1.3vw, 0.95rem); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);">{{ loaderLabel }}</span>
+            <span style="font-size: clamp(2.4rem, 8.5vw, 6.5rem); font-weight: 500; letter-spacing: -0.05em; line-height: 0.9;">{{ pctText }}</span>
+          </div>
+          <div style="height: 2px; background: var(--line); margin-top: 20px; overflow: hidden;">
+            <div style="height: 100%; background: #c9beee; transition: width 0.14s linear; width: {{ pctWidth }};"></div>
+          </div>
+        </div>
+        <div style="margin-top: clamp(24px, 5vh, 46px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(20px, 4vw, 56px); align-items: end; transition: opacity 0.8s ease; opacity: {{ doneOpacity }};">
+          <h2 style="margin: 0; font-weight: 400; font-size: clamp(1.45rem, 3.2vw, 2.8rem); line-height: 1.06; letter-spacing: -0.04em; text-wrap: pretty;">{{ t.threedTitle }}</h2>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <p style="margin: 0; font-size: 1rem; line-height: 1.6; color: var(--dim); text-wrap: pretty;">{{ t.threedBody }}</p>
+            <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+              <form onSubmit="{{ onSubmitEmail }}" style="display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 9px;">
+                <input type="email" required="required" value="{{ email }}" onChange="{{ onEmailChange }}" placeholder="{{ t.emailPlaceholder }}" style="flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; letter-spacing: 0.04em; padding: 6px 0;">
+                <button type="submit" style="background: #f0dfa8; color: #14130f; border: 0; padding: 9px 14px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; transition: opacity 0.3s ease;" style-hover="opacity: 0.72;">{{ t.notify }}</button>
+              </form>
+            </sc-if>
+            <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+              <p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 10px 0; border-bottom: 1px solid #f0dfa8;">{{ t.sentMsg }}</p>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="certs" data-screen-label="06 Certificados" style="width: 100vw; flex: none; height: 100%; scroll-snap-align: start; overflow-y: auto; overflow-x: hidden; display: flex; align-items: center; padding: clamp(24px, 5vw, 72px); padding-top: calc(var(--hdr, 130px) + clamp(24px, 4vh, 48px)); border-top: 3px solid #bfe1f0;">
+      <div style="width: 100%;">
+        <div style="display: flex; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: clamp(22px, 4vh, 44px);">
+          <span style="color: #bfe1f0;">06</span><span>{{ t.nav.certs }}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line);">
+          <sc-for list="{{ t.certs }}" as="c" hint-placeholder-count="4">
+            <div style="background: var(--bg); padding: clamp(18px, 2.4vw, 28px); display: flex; flex-direction: column; gap: 12px; min-height: 180px; border-top: 2px solid transparent; transition: background 0.4s ease, border-color 0.4s ease;" style-hover="background: var(--panel); border-color: #bfe1f0;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: var(--dim);">{{ c.year }}</span>
+              <h3 style="margin: 0; font-weight: 400; font-size: 1.2rem; line-height: 1.22; letter-spacing: -0.025em; text-wrap: pretty;">{{ c.name }}</h3>
+              <span style="margin-top: auto; font-size: 0.88rem; color: var(--dim);">{{ c.issuer }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="exp" data-screen-label="07 Experiencia" style="width: 100vw; flex: none; height: 100%; scroll-snap-align: start; overflow-y: auto; overflow-x: hidden; display: flex; align-items: center; padding: clamp(24px, 5vw, 72px); padding-top: calc(var(--hdr, 130px) + clamp(24px, 4vh, 48px)); border-top: 3px solid #b8e6d3;">
+      <div style="width: 100%;">
+        <div style="display: flex; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: clamp(22px, 4vh, 44px);">
+          <span style="color: #b8e6d3;">07</span><span>{{ t.nav.exp }}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; border-bottom: 1px solid var(--line);">
+          <sc-for list="{{ t.exp }}" as="e" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px clamp(14px, 3vw, 40px); border-top: 1px solid var(--line); padding: clamp(16px, 3vh, 28px) 0; align-items: baseline;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--dim);">{{ e.when }}</span>
+              <div>
+                <h3 style="margin: 0; font-weight: 400; font-size: clamp(1.1rem, 2.1vw, 1.75rem); line-height: 1.12; letter-spacing: -0.032em; text-wrap: pretty;">{{ e.role }}</h3>
+                <span style="display: block; margin-top: 8px; font-size: 0.92rem; color: var(--dim);">{{ e.org }}</span>
+              </div>
+              <p style="margin: 0; font-size: 0.96rem; line-height: 1.6; color: var(--dim); text-wrap: pretty;">{{ e.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="edu" data-screen-label="08 Educación" style="width: 100vw; flex: none; height: 100%; scroll-snap-align: start; overflow-y: auto; overflow-x: hidden; display: flex; align-items: center; padding: clamp(24px, 5vw, 72px); padding-top: calc(var(--hdr, 130px) + clamp(24px, 4vh, 48px)); border-top: 3px solid #bfe1f0;">
+      <div style="width: 100%;">
+        <div style="display: flex; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: clamp(22px, 4vh, 44px);">
+          <span style="color: #bfe1f0;">08</span><span>{{ t.nav.edu }}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(20px, 4vw, 60px);">
+          <sc-for list="{{ t.edu }}" as="e" hint-placeholder-count="2">
+            <div style="border-top: 1px solid var(--line); padding-top: 18px; display: flex; flex-direction: column; gap: 10px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: var(--dim);">{{ e.when }}</span>
+              <h3 style="margin: 0; font-weight: 400; font-size: clamp(1.15rem, 2.3vw, 1.9rem); line-height: 1.12; letter-spacing: -0.032em; text-wrap: pretty;">{{ e.name }}</h3>
+              <span style="font-size: 0.92rem; color: var(--dim);">{{ e.org }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" data-screen-label="09 Contacto" style="width: 100vw; flex: none; height: 100%; scroll-snap-align: start; overflow-y: auto; overflow-x: hidden; display: grid; grid-template-rows: 1fr auto; gap: 30px; padding: clamp(24px, 5vw, 72px); padding-top: calc(var(--hdr, 130px) + clamp(24px, 4vh, 48px)); border-top: 3px solid #f0dfa8;">
+      <div style="display: flex; flex-direction: column; justify-content: center;">
+        <div style="display: flex; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: clamp(22px, 4vh, 44px);">
+          <span style="color: #f0dfa8;">09</span><span>{{ t.nav.contact }}</span>
+        </div>
+        <p style="margin: 0 0 clamp(20px, 4vh, 44px); max-width: 30ch; font-size: clamp(1.6rem, 4.4vw, 3.4rem); line-height: 1.04; letter-spacing: -0.045em; text-wrap: pretty;">{{ t.contactLead }}</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px clamp(14px, 3vw, 40px); align-items: center;">
+          <a href="mailto:leonardo.trejos@hotmail.com" style="font-size: clamp(1.05rem, 2.4vw, 1.9rem); letter-spacing: -0.03em; border-bottom: 1px solid var(--line); padding-bottom: 4px; transition: border-color 0.4s ease;" style-hover="border-color: #f0dfa8;">leonardo.trejos@hotmail.com</a>
+          <a href="https://www.linkedin.com/in/leonardotrejos" target="_blank" rel="noreferrer" style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid transparent; padding-bottom: 4px; transition: color 0.3s ease, border-color 0.4s ease;" style-hover="color: var(--ink); border-color: #f0dfa8;">LinkedIn</a>
+          <a href="tel:+573216982181" style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid transparent; padding-bottom: 4px; transition: color 0.3s ease, border-color 0.4s ease;" style-hover="color: var(--ink); border-color: #f0dfa8;">+57 321 698 2181</a>
+          <a href="Leonardo-Trejos-CV.pdf" download="Leonardo-Trejos-CV.pdf" style="background: #f0dfa8; color: #14130f; padding: 13px 20px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; transition: opacity 0.3s ease;" style-hover="opacity: 0.72;">{{ t.cv }}</a>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim);">
+        <span>Pereira, Colombia · UTC−5</span>
+        <span>{{ t.footer }}</span>
+      </div>
+    </section>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = {
+    lang: "es", theme: "dark", pct: 0, done: false, prog: 0, idx: 0,
+    email: "", sent: false, wipe: 0,
+    cur: { x: -200, y: -200, on: false, label: "" }
+  };
+
+  dict = {
+    es: {
+      navRole: "Frontend Lead Engineer",
+      themeLabel: "Cambiar modo claro / oscuro",
+      role: "Frontend Lead Engineer",
+      heroStatus: "Disponible para proyectos remotos",
+      heroMeta: "Pereira, Colombia — Remoto",
+      located: "Ubicado en Pereira, Colombia",
+      heroRoleLines: "Frontend Lead Engineer & Fullstack",
+      heroLine: "Construyo interfaces en React, Next.js y TypeScript, con base en ciberseguridad y automatización con IA como diferencial.",
+      scroll: "Desliza",
+      cv: "Descargar CV",
+      workNote: "Selección 2024 — 2026",
+      previewTag: "Adelanto",
+      notify: "Avísame",
+      emailPlaceholder: "tu@correo.com",
+      sentMsg: "Listo. Te escribo cuando esté publicado.",
+      footer: "Portafolio 2026 — Vite · React · Django",
+      nav: { about: "Sobre mí", stack: "Stack", work: "Proyectos", threed: "Próximamente: modelados 3D", certs: "Certificados", exp: "Experiencia", edu: "Educación", contact: "Contacto" },
+      aboutLead: "Ingeniero fullstack con inclinación al frontend: dueño de la entrega de punta a punta, del diseño de la API a la integración compleja en pantalla.",
+      aboutP1: "Actualmente soy Frontend Lead Engineer en la Universidad Católica de Pereira, donde soy el único ingeniero de una plataforma de gestión documental e investigación: desde el diseño de la API en Laravel/PostgreSQL hasta el frontend en React, Next.js y TypeScript que la consume.",
+      aboutP2: "Trabajo cómodo cerca de sistemas legacy y de terceros: integración de APIs REST, pipelines de datos automatizados con n8n y Gemini, y depuración cruzada desde la base de datos hasta la UI.",
+      facts: [
+        { k: "Experiencia", v: "2.5+ años" }, { k: "Base", v: "Pereira, CO" },
+        { k: "Modalidad", v: "Remoto" }, { k: "Idiomas", v: "ES / EN" }
+      ],
+      stack: [
+        { k: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vite", "shadcn/ui"] },
+        { k: "Backend", items: ["Laravel", "Node.js", "Django Ninja", "PostgreSQL", "MySQL", "Diseño de APIs REST"] },
+        { k: "Cloud & DevOps", items: ["AWS", "Docker", "CI/CD", "Coolify", "Oracle Cloud", "Hetzner"] },
+        { k: "IA & automatización", items: ["Gemini API", "n8n", "Python (ML)", "Desarrollo asistido por IA"] }
+      ],
+      projects: [
+        { n: "01", name: "Plataforma de gestión de investigación", kind: "Plataforma interna académica y de gestión documental (GD). Único frontend engineer: marcación de zonas de firma en PDF con Canvas API sobre react-pdf-viewer y módulo de asistencia por QR.", stack: "React · Next.js · TypeScript · Tailwind · Laravel · PostgreSQL", year: "2026", cursor: "Interno" },
+        { n: "02", name: "Defensa anti-phishing para PYMES", kind: "Proyecto de grado (especialización UTP). Modelo de doble barrera con cuatro algoritmos entrenados —Random Forest, SVM, XGBoost y CNN-LSTM— para detección de phishing en URLs; Random Forest como modelo ganador. Autor único.", stack: "Python · scikit-learn · XGBoost · Keras", year: "2026", cursor: "Académico" },
+        { n: "03", name: "Automatización con IA — El Mono Bandido", kind: "Freelance para grupo de restaurantes: validación de facturas con Gemini Vision, detección de anomalías en inventario y reportes automáticos por WhatsApp. Desarrollador único.", stack: "Gemini Vision · n8n · PostgreSQL · Node.js", year: "2025 — 2026", cursor: "Freelance" },
+        { n: "04", name: "HuellaAgent", kind: "Agente de bandeja de Windows que integra lectores de huella DigitalPersona. Desarrollador único; publicado como pieza de portafolio técnico.", stack: "C# · .NET · DigitalPersona SDK", year: "2025", cursor: "LinkedIn" }
+      ],
+      threedTitle: "En construcción — próximamente proyectos 3D interactivos.",
+      threedBody: "Estoy montando una sección de modelados y escenas 3D en el navegador. Déjame tu correo y te aviso el día que esté en línea. Sin lista de correos, sin ruido.",
+      certs: [
+        { year: "2026", name: "Cisco Certified CyberOps Associate", issuer: "Cisco" },
+        { year: "2025", name: "Google Cybersecurity Professional Certificate", issuer: "Google" },
+        { year: "2025", name: "AWS Academy Cloud Security Builder", issuer: "AWS Academy" },
+        { year: "2024", name: "AWS Academy Cloud Foundations", issuer: "AWS Academy" }
+      ],
+      exp: [
+        { when: "Ene 2026 — Presente", role: "Frontend Lead Engineer (Fullstack)", org: "Universidad Católica de Pereira", body: "Único ingeniero del módulo de gestión documental y de la plataforma de investigación, de punta a punta. Sistema de zonas de firma en PDF con Canvas API y mapeo de coordenadas; corrección del pipeline de envío Laravel/React por incompatibilidad FormData/PUT." },
+        { when: "Ene 2025 — Ene 2026", role: "Frontend Lead", org: "Cerebria", body: "Único frontend engineer: desarrollo de punta a punta en Next.js 15/16 y Vite. Diseño de flujos de autenticación y estándares de protección de datos; arquitectura modular por componentes que mejoró la reutilización de código en un 40%." },
+        { when: "Jul 2025 — Ene 2026", role: "Fullstack Developer", org: "El Mono Bandido", body: "Features fullstack integrando APIs REST con interfaces responsive. Optimización de consultas PostgreSQL y lógica de backend, con una mejora del 25% en tiempos de respuesta." }
+      ],
+      edu: [
+        { when: "2025 — 2026", name: "Especialización en TIC", org: "Universidad Tecnológica de Pereira (UTP)" },
+        { when: "2025 — 2026", name: "Ingeniería de Sistemas", org: "Universidad Tecnológica de Pereira (UTP)" }
+      ],
+      contactLead: "Abierto a oportunidades remotas de alta responsabilidad."
+    },
+    en: {
+      navRole: "Frontend Lead Engineer",
+      themeLabel: "Toggle light / dark mode",
+      role: "Frontend Lead Engineer",
+      heroStatus: "Available for remote work",
+      heroMeta: "Pereira, Colombia — Remote",
+      located: "Located in Pereira, Colombia",
+      heroRoleLines: "Frontend Lead Engineer & Fullstack",
+      heroLine: "I build interfaces in React, Next.js and TypeScript, with a cybersecurity background and AI automation as my edge.",
+      scroll: "Scroll",
+      cv: "Download CV",
+      workNote: "Selected 2024 — 2026",
+      previewTag: "Preview",
+      notify: "Notify me",
+      emailPlaceholder: "you@email.com",
+      sentMsg: "Done. I'll write when it ships.",
+      footer: "Portfolio 2026 — Vite · React · Django",
+      nav: { about: "About", stack: "Stack", work: "Work", threed: "Coming soon: 3D models", certs: "Certifications", exp: "Experience", edu: "Education", contact: "Contact" },
+      aboutLead: "Fullstack engineer leaning frontend: end-to-end ownership, from API design to complex on-screen integration.",
+      aboutP1: "I'm currently Frontend Lead Engineer at Universidad Católica de Pereira, sole engineer on a document-management and research platform: from Laravel/PostgreSQL API design to the React, Next.js and TypeScript frontend consuming it.",
+      aboutP2: "I'm comfortable working close to legacy and third-party systems: REST API integration, automated data pipelines with n8n and Gemini, and cross-stack debugging from database to UI.",
+      facts: [
+        { k: "Experience", v: "2.5+ years" }, { k: "Based in", v: "Pereira, CO" },
+        { k: "Setup", v: "Remote" }, { k: "Languages", v: "ES / EN" }
+      ],
+      stack: [
+        { k: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vite", "shadcn/ui"] },
+        { k: "Backend", items: ["Laravel", "Node.js", "Django Ninja", "PostgreSQL", "MySQL", "REST API design"] },
+        { k: "Cloud & DevOps", items: ["AWS", "Docker", "CI/CD", "Coolify", "Oracle Cloud", "Hetzner"] },
+        { k: "AI & automation", items: ["Gemini API", "n8n", "Python (ML)", "AI-assisted dev"] }
+      ],
+      projects: [
+        { n: "01", name: "Research management platform", kind: "Internal academic and document-management (GD) platform. Sole frontend engineer: PDF signature-zone marking with the Canvas API over react-pdf-viewer, plus a QR attendance module.", stack: "React · Next.js · TypeScript · Tailwind · Laravel · PostgreSQL", year: "2026", cursor: "Internal" },
+        { n: "02", name: "Anti-phishing defense for SMBs", kind: "Graduation project (UTP specialization). Double-barrier model training four algorithms —Random Forest, SVM, XGBoost and CNN-LSTM— for URL phishing detection; Random Forest won. Sole author.", stack: "Python · scikit-learn · XGBoost · Keras", year: "2026", cursor: "Academic" },
+        { n: "03", name: "AI automation — El Mono Bandido", kind: "Freelance for a restaurant group: invoice validation with Gemini Vision, inventory anomaly detection and automated WhatsApp reporting. Sole developer.", stack: "Gemini Vision · n8n · PostgreSQL · Node.js", year: "2025 — 2026", cursor: "Freelance" },
+        { n: "04", name: "HuellaAgent", kind: "Windows tray agent integrating DigitalPersona fingerprint readers. Sole developer; published as a technical portfolio piece.", stack: "C# · .NET · DigitalPersona SDK", year: "2025", cursor: "LinkedIn" }
+      ],
+      threedTitle: "Under construction — interactive 3D projects coming soon.",
+      threedBody: "I'm building a section for browser-based 3D models and scenes. Leave your email and I'll tell you the day it goes live. No mailing list, no noise.",
+      certs: [
+        { year: "2026", name: "Cisco Certified CyberOps Associate", issuer: "Cisco" },
+        { year: "2025", name: "Google Cybersecurity Professional Certificate", issuer: "Google" },
+        { year: "2025", name: "AWS Academy Cloud Security Builder", issuer: "AWS Academy" },
+        { year: "2024", name: "AWS Academy Cloud Foundations", issuer: "AWS Academy" }
+      ],
+      exp: [
+        { when: "Jan 2026 — Present", role: "Frontend Lead Engineer (Fullstack)", org: "Universidad Católica de Pereira", body: "Sole engineer owning the document-management module and research platform end-to-end. PDF signature-zone system with the Canvas API and custom coordinate mapping; fixed a Laravel/React submission pipeline bug caused by FormData/PUT incompatibility." },
+        { when: "Jan 2025 — Jan 2026", role: "Frontend Lead", org: "Cerebria", body: "Sole frontend engineer, shipping production features on Next.js 15/16 and Vite. Designed authentication flows and data-protection standards; architected a modular component-based frontend that improved code reuse by 40%." },
+        { when: "Jul 2025 — Jan 2026", role: "Fullstack Developer", org: "El Mono Bandido", body: "Fullstack features integrating REST APIs with responsive interfaces. Optimized PostgreSQL queries and backend logic, improving server response times by 25%." }
+      ],
+      edu: [
+        { when: "2025 — 2026", name: "Specialization in ICT", org: "Universidad Tecnológica de Pereira (UTP)" },
+        { when: "2025 — 2026", name: "B.S. in Systems Engineering", org: "Universidad Tecnológica de Pereira (UTP)" }
+      ],
+      contactLead: "Open to high-ownership remote roles."
+    }
+  };
+
+  componentDidMount() {
+    document.documentElement.dataset.theme = this.state.theme;
+    this.onMove = (e) => {
+      this.setState((s) => ({ cur: { ...s.cur, x: e.clientX, y: e.clientY } }));
+    };
+    window.addEventListener("mousemove", this.onMove);
+    this.clock = setInterval(() => this.forceUpdate(), 20000);
+    this.bindScroller();
+    setTimeout(() => this.bindScroller(), 300);
+  }
+
+  bindScroller() {
+    if (!this.scrollEl) this.scrollEl = document.querySelector('[data-scroll]');
+    if (!this.scrollEl || this.bound) return;
+    this.bound = true;
+    {
+    }
+    if (this.loaderEl) {
+      this.io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => { if (en.isIntersecting) this.runLoader(); });
+      }, { threshold: 0.4 });
+      this.io.observe(this.loaderEl);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("mousemove", this.onMove);
+    if (this.io) this.io.disconnect();
+    if (this.ro) this.ro.disconnect();
+    if (this.timer) clearInterval(this.timer);
+    if (this.clock) clearInterval(this.clock);
+    if (this.onKey) window.removeEventListener("keydown", this.onKey);
+    if (this.scrollEl) {
+      if (this.onWheel) this.scrollEl.removeEventListener("wheel", this.onWheel);
+      if (this.onScroll) this.scrollEl.removeEventListener("scroll", this.onScroll);
+    }
+  }
+
+  labelFor(idx) {
+    const t = this.dict[this.state.lang];
+    return ["Leonardo Trejos", t.nav.about, t.nav.stack, t.nav.work, "3D", t.nav.certs, t.nav.exp, t.nav.edu, t.nav.contact][idx] || "";
+  }
+
+  stepPanel(dir) {
+    const el = this.scrollEl;
+    if (!el) return;
+    const w = el.clientWidth;
+    const max = el.scrollWidth - w;
+    const cur = Math.round(el.scrollLeft / w);
+    const target = Math.max(0, Math.min(max, Math.min(8, Math.max(0, cur + dir)) * w));
+    this.tweenTo(target);
+  }
+
+  tweenTo(target) {
+    const el = this.scrollEl;
+    const from = el.scrollLeft;
+    const dist = target - from;
+    if (Math.abs(dist) < 2) return;
+    const dur = 620, t0 = Date.now();
+    this.tween = setInterval(() => {
+      const p = Math.min(1, (Date.now() - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      el.scrollLeft = from + dist * e;
+      if (p >= 1) { clearInterval(this.tween); this.tween = null; }
+    }, 16);
+  }
+
+  runLoader() {
+    if (this.timer || this.state.done) return;
+    this.timer = setInterval(() => {
+      this.setState((s) => {
+        const next = Math.min(100, s.pct + Math.max(1, Math.round(Math.random() * 4)));
+        if (next >= 100) { clearInterval(this.timer); this.timer = null; setTimeout(() => this.setState({ done: true }), 420); }
+        return { pct: next };
+      });
+    }, 55);
+  }
+
+  goTo(id) {
+    this.setState({ wipe: 1 });
+    setTimeout(() => {
+      if (window.leoGoTo) window.leoGoTo(id);
+      this.setState({ wipe: 2 });
+      setTimeout(() => this.setState({ wipe: 0 }), 620);
+    }, 620);
+  }
+
+  renderVals() {
+    const base = this.dict[this.state.lang];
+    const t = { ...base, projects: base.projects.map((p) => ({
+      ...p,
+      enter: () => this.setState((s) => ({ cur: { ...s.cur, on: true, label: p.cursor } }))
+    })) };
+    const c = this.state.cur;
+    const wipeMap = { 0: "scaleX(0) translateX(0)", 1: "scaleX(1)", 2: "scaleX(0) translateX(100%)" };
+    const navKeys = ["about", "stack", "work", "threed", "certs", "exp", "edu", "contact"];
+    const navLabels = { threed: this.state.lang === "es" ? "3D" : "3D" };
+    return {
+      t,
+      navItems: navKeys.map((k) => ({ label: navLabels[k] || t.nav[k], go: () => this.goTo(k) })),
+      projects: t.projects,
+      setEs: () => { document.documentElement.dataset.lang = "es"; this.setState({ lang: "es" }); },
+      setEn: () => { document.documentElement.dataset.lang = "en"; this.setState({ lang: "en" }); },
+      esBg: this.state.lang === "es" ? "#f0dfa8" : "transparent",
+      esInk: this.state.lang === "es" ? "#14130f" : "var(--dim)",
+      enBg: this.state.lang === "en" ? "#f0dfa8" : "transparent",
+      enInk: this.state.lang === "en" ? "#14130f" : "var(--dim)",
+      themeGlyph: this.state.theme === "dark"
+        ? (this.state.lang === "es" ? "Claro" : "Light")
+        : (this.state.lang === "es" ? "Oscuro" : "Dark"),
+      headerRef: (el) => {
+        if (!el || this.headerEl === el) return;
+        this.headerEl = el;
+        const sync = () => document.documentElement.style.setProperty("--hdr", el.offsetHeight + "px");
+        sync();
+        if (this.ro) this.ro.disconnect();
+        this.ro = new ResizeObserver(sync);
+        this.ro.observe(el);
+      },
+      toggleTheme: () => {
+        const theme = this.state.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = theme;
+        this.setState({ theme });
+      },
+      progWidth: (this.state.prog * 100).toFixed(2) + "%",
+      panelNum: String(this.state.idx + 1).padStart(2, "0"),
+      panelLabel: ["Leonardo Trejos", t.nav.about, t.nav.stack, t.nav.work, "3D", t.nav.certs, t.nav.exp, t.nav.edu, t.nav.contact][this.state.idx] || "",
+      localTime: new Intl.DateTimeFormat(this.state.lang === "es" ? "es-CO" : "en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/Bogota" }).format(new Date()),
+      scrollRef: (el) => { this.scrollEl = el; this.bindScroller(); },
+      loaderRef: (el) => { this.loaderEl = el; },
+      wipe: wipeMap[this.state.wipe],
+      pctText: String(this.state.pct).padStart(3, "0") + "%",
+      pctWidth: this.state.pct + "%",
+      loaderLabel: this.state.done
+        ? (this.state.lang === "es" ? "Proceso detenido" : "Process halted")
+        : (this.state.lang === "es" ? "Compilando modelos" : "Compiling models"),
+      doneOpacity: this.state.done ? 1 : 0.14,
+      email: this.state.email,
+      onEmailChange: (e) => this.setState({ email: e.target.value }),
+      onSubmitEmail: (e) => { e.preventDefault(); this.setState({ sent: true }); },
+      sent: this.state.sent,
+      notSent: !this.state.sent,
+      cur: {
+        t: "translate(" + (c.x - 42) + "px," + (c.y - 42) + "px)",
+        s: c.on ? "84px" : "0px",
+        o: c.on ? 1 : 0,
+        label: c.label
+      },
+      curOff: () => this.setState((s) => ({ cur: { ...s.cur, on: false } }))
+    };
+  }
+}
+</script>
+</body>
+</html>

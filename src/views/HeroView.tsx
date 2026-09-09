@@ -27,7 +27,7 @@ export function HeroView({ t, localTime, onNext }: HeroViewProps) {
         </div>
 
         <span className="animate-leo-drift text-[50px] text-hero-ink">↘</span>
-        <p className="m-0 text-[clamp(5rem,3vw,3rem)] leading-[1.12] tracking-[-0.03em] text-pretty text-hero-ink">
+        <p className="m-0 text-[clamp(4rem,3vw,3rem)] leading-[1.12] tracking-[-0.03em] text-pretty text-hero-ink">
           {t.heroRoleLines}
         </p>
         <button

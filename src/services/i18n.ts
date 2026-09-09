@@ -24,13 +24,13 @@ export const NAV_KEYS: NavKey[] = [
 ];
 
 const es: Dictionary = {
-  navRole: "Frontend Lead Engineer",
+  navRole: "Fullstack Engineer",
   themeLabel: "Cambiar modo claro / oscuro",
-  role: "Frontend Lead Engineer",
+  role: "Fullstack Engineer",
   heroStatus: "Disponible para proyectos remotos",
   heroMeta: "Pereira, Colombia — Remoto",
   located: "Ubicado en Pereira, Colombia",
-  heroRoleLines: "Frontend Lead Engineer & Fullstack",
+  heroRoleLines: "Fullstack Engineer",
   heroLine:
     "Construyo interfaces en React, Next.js y TypeScript, con base en ciberseguridad y automatización con IA como diferencial.",
   scroll: "Desliza",

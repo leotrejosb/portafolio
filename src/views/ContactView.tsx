@@ -40,7 +40,7 @@ export function ContactView({ t }: ContactViewProps) {
             +57 321 698 2181
           </a>
           <a
-            href="/Leonardo-Trejos-CV.pdf"
+            href={`${import.meta.env.BASE_URL}Leonardo-Trejos-CV.pdf`}
             download="Leonardo-Trejos-CV.pdf"
             className="bg-hot px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.2em] text-hero-ink transition-opacity duration-300 hover:opacity-70"
           >

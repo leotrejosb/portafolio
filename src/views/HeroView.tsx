@@ -41,7 +41,7 @@ export function HeroView({ t, localTime, onNext }: HeroViewProps) {
       </div>
 
       <img
-        src="/leo-portrait.jpeg"
+        src={`${import.meta.env.BASE_URL}leo-portrait.jpeg`}
         alt="Leonardo Trejos"
         className="pointer-events-none absolute top-[calc(var(--hdr,60px))] left-[max(50vw,560px)] z-[2] h-[min(900px,100vh)] w-[min(720px,70vw)] animate-leo-rise object-cover object-[50%_10%]"
       />

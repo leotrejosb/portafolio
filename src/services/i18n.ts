@@ -163,13 +163,13 @@ const es: Dictionary = {
 };
 
 const en: Dictionary = {
-  navRole: "Frontend Lead Engineer",
+  navRole: "Fullstack Engineer",
   themeLabel: "Toggle light / dark mode",
-  role: "Frontend Lead Engineer",
+  role: "Fullstack Engineer",
   heroStatus: "Available for remote work",
   heroMeta: "Pereira, Colombia — Remote",
   located: "Located in Pereira, Colombia",
-  heroRoleLines: "Frontend Lead Engineer & Fullstack",
+  heroRoleLines: "Fullstack Engineer",
   heroLine:
     "I build interfaces in React, Next.js and TypeScript, with a cybersecurity background and AI automation as my edge.",
   scroll: "Scroll",
